@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blogs — Sanskar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <a href="index.html" class="logo"><span class="mark">SANSKAR NANDA</span></a>
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html" data-page="index.html">Home</a></li>
+      <li><a href="about.html" data-page="about.html">About Me</a></li>
+      <li><a href="cv.html" data-page="cv.html">CV</a></li>
+      <li><a href="https://github.com/Sanskar-hep" target="_blank" rel="noopener" class="external-link">GitHub ↗</a></li>
+      <li><a href="blogs.html" data-page="blogs.html">Blogs</a></li>
+      <li><a href="contact.html" data-page="contact.html">Contact me</a></li>
+    </ul>
+  </div>
+</nav>
+
+<section style="padding-bottom:20px;">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="eyebrow">Blogs</p>
+      <h2>Notes on the analysis, and everything around it</h2>
+      <p>Posts are listed from <code>js/blogs-data.js</code> — add an entry there to publish a new one, no HTML editing needed.</p>
+    </div>
+    <div class="card-grid" id="blog-grid"></div>
+    <div class="empty-note" id="blog-empty" style="display:none; margin-top: 20px;">
+      No posts yet. Add one in <code>js/blogs-data.js</code>.
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> Sanskar. Built and hosted on GitHub Pages.</span>
+    <span><a href="contact.html">Get in touch →</a></span>
+  </div>
+</footer>
+
+<script src="js/blogs-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  (function () {
+    var grid = document.getElementById('blog-grid');
+    var empty = document.getElementById('blog-empty');
+    var posts = (typeof BLOG_POSTS !== 'undefined') ? BLOG_POSTS.slice() : [];
+
+    if (posts.length === 0) {
+      empty.style.display = 'block';
+      return;
+    }
+
+    posts.sort(function (a, b) { return new Date(b.date) - new Date(a.date); });
+
+    posts.forEach(function (post) {
+      var card = document.createElement('article');
+      card.className = 'card';
+
+      var dateStr = new Date(post.date).toLocaleDateString('en-US', {
+        year: 'numeric', month: 'short', day: 'numeric'
+      });
+
+      var tagsHtml = (post.tags || []).map(function (t) {
+        return '<span class="tag">' + t + '</span>';
+      }).join('');
+
+      card.innerHTML =
+        '<div class="eyebrow" style="margin-bottom:0;">' + dateStr + '</div>' +
+        '<h3>' + post.title + '</h3>' +
+        '<p>' + post.excerpt + '</p>' +
+        '<div class="tag-row">' + tagsHtml + '</div>' +
+        '<a class="card-link" href="' + post.url + '">Read post ↗</a>';
+
+      grid.appendChild(card);
+    });
+  })();
+</script>
+</body>
+</html>
