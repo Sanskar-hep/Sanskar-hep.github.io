@@ -12,7 +12,6 @@ Search the HTML files for these and fill in your real details:
 
 - `your.email@example.com` — in `contact.html`
 - `linkedin.com/in/YOUR-USERNAME` — in `contact.html`
-- Google Scholar link — in `contact.html`
 - `assets/photo.jpg` — your hero photo, referenced in `index.html`
 - `assets/CV.pdf` — drop your actual CV PDF here, or update the link in `cv.html`
   to match whatever you name it
@@ -45,14 +44,3 @@ Posts themselves live in `js/blogs-data.js` — one object per post, no HTML edi
 
 Future updates: `git add . && git commit -m "..." && git push` — the live site
 updates automatically, no redeploy step.
-
-## Notes on the design
-
-- Palette: dark slate background with two accents, cyan and amber — the same pair
-  real detector event displays use to color-code negative and positive tracks,
-  which is also what the thesis this site describes measures the asymmetry of.
-- The hero background (`js/main.js`, `track-field` canvas) draws curved arcs using
-  actual cyclotron motion: a charged particle in a magnetic field curves one way
-  if positive, the other if negative. Respects `prefers-reduced-motion`.
-- Fonts: Space Grotesk (headings), IBM Plex Sans (body), IBM Plex Mono (labels,
-  data, nav) — loaded from Google Fonts, no local files needed.
