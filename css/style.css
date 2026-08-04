@@ -642,3 +642,80 @@ footer a:hover{ color: var(--cyan); }
   color: var(--text-secondary);
   font-size: 0.95rem;
 }
+
+/* =========================================================
+   CV request gate
+   ========================================================= */
+.cv-gate-backdrop{
+  position: fixed;
+  inset: 0;
+  background: rgba(4, 6, 10, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+}
+
+.cv-gate{
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  max-width: 380px;
+  width: 100%;
+  position: relative;
+}
+
+.cv-gate h3{
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  margin: 0 0 8px;
+}
+
+.cv-gate p{
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  margin: 0 0 18px;
+}
+
+.cv-gate form{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cv-gate input{
+  font-family: var(--font-body);
+  font-size: 0.94rem;
+  padding: 11px 13px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-panel-2);
+  color: var(--text-primary);
+}
+
+.cv-gate input:focus{ outline: 2px solid var(--cyan); outline-offset: 1px; }
+
+.cv-gate-status{
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--cyan);
+  margin-top: 10px !important;
+  min-height: 1em;
+}
+
+.cv-gate-close{
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: var(--text-tertiary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.cv-gate-close:hover{ color: var(--text-primary); }

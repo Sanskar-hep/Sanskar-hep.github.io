@@ -142,3 +142,50 @@
     requestAnimationFrame(tick);
   }
 })();
+
+/* ---------------------------------------------------------
+   CV request gate (cv.html only)
+   Opens a small modal asking for a name before starting the
+   download. On submit, the details POST to Formspree (so you
+   get an email record of who requested it), then the actual
+   PDF download starts.
+--------------------------------------------------------- */
+(function () {
+  var openBtn = document.getElementById('cv-request-btn');
+  var backdrop = document.getElementById('cv-gate-backdrop');
+  var closeBtn = document.getElementById('cv-gate-close');
+  var form = document.getElementById('cv-gate-form');
+  var status = document.getElementById('cv-gate-status');
+  if (!openBtn || !backdrop || !form) return;
+
+  openBtn.addEventListener('click', function () { backdrop.hidden = false; });
+  closeBtn.addEventListener('click', function () { backdrop.hidden = true; });
+  backdrop.addEventListener('click', function (e) {
+    if (e.target === backdrop) backdrop.hidden = true;
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    status.textContent = 'Sending...';
+    var data = new FormData(form);
+    fetch(form.action, {
+      method: 'POST',
+      body: data,
+      headers: { 'Accept': 'application/json' }
+    }).then(function (res) {
+      if (res.ok) {
+        status.textContent = 'Thanks — starting your download.';
+        window.location.href = 'assets/CV.pdf';
+        setTimeout(function () {
+          backdrop.hidden = true;
+          form.reset();
+          status.textContent = '';
+        }, 1200);
+      } else {
+        status.textContent = 'Something went wrong — please try again.';
+      }
+    }).catch(function () {
+      status.textContent = 'Network error — please try again.';
+    });
+  });
+})();

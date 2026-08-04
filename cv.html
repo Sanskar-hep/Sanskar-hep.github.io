@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml"> 
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -34,11 +34,11 @@
     <div class="section-head" style="display:flex; align-items:flex-end; justify-content:space-between; gap:20px; flex-wrap:wrap; max-width:none;">
       <div>
         <p class="eyebrow">Curriculum Vitae</p>
-        <h2 style="margin-bottom:6px;">Sanskar Nanda</h2>
-        <p style="color:var(--text-secondary); margin:0;">BS-MS, Physical Sciences · IISER Berhampur</p>
+        <h2 style="margin-bottom:6px;">Sanskar</h2>
+        <p style="color:var(--text-secondary); margin:0;">Final-year BS-MS, Physical Sciences · IISER Berhampur</p>
       </div>
-      <!-- Replace assets/CV.pdf with your actual CV file -->
-      <a href="assets/CV.pdf" class="btn btn-primary" download>Download PDF ↓</a>
+      <!-- Direct download replaced with a gate — see #cv-gate-backdrop below -->
+      <button type="button" id="cv-request-btn" class="btn btn-primary">Request CV ↓</button>
     </div>
   </div>
 </section>
@@ -46,10 +46,25 @@
 
 <footer>
   <div class="wrap">
-    <span>© <span id="year"></span> Sanskar. All rights reserved.</span>
+    <span>© <span id="year"></span> Sanskar. Built and hosted on GitHub Pages.</span>
     <span><a href="contact.html">Get in touch →</a></span>
   </div>
 </footer>
+
+<div id="cv-gate-backdrop" class="cv-gate-backdrop" hidden>
+  <div class="cv-gate">
+    <button type="button" id="cv-gate-close" class="cv-gate-close" aria-label="Close">✕</button>
+    <h3>Quick, before you download</h3>
+    <p>Just your name (and email if you'd like a reply) — helps me know who's actually reading this.</p>
+    <!-- Replace YOUR_FORM_ID with your real Formspree endpoint -->
+    <form id="cv-gate-form" action="https://formspree.io/f/mbgrrgwr" method="POST">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Your email (optional)">
+      <button type="submit" class="btn btn-primary">Continue to download</button>
+    </form>
+    <p id="cv-gate-status" class="cv-gate-status"></p>
+  </div>
+</div>
 
 <script src="js/main.js"></script>
 <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
