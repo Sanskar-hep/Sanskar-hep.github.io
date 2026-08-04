@@ -31,6 +31,37 @@
 
 *, *::before, *::after{ box-sizing: border-box; }
 
+/* =========================================================
+   Light theme
+   Same variable names, lighter values. Toggled by setting
+   data-theme="light" on <html> (see js/main.js).
+   ========================================================= */
+[data-theme="light"]{
+  --bg: #f7f8fa;
+  --bg-panel: #ffffff;
+  --bg-panel-2: #eef0f4;
+  --border: #dde1e8;
+  --border-soft: #e6e9ee;
+
+  --text-primary: #14181f;
+  --text-secondary: #4b5566;
+  --text-tertiary: #7a8494;
+
+  --cyan: #0891b2;
+  --cyan-dim: #7dd3e0;
+  --amber: #b45309;
+  --amber-dim: #f0b467;
+}
+
+[data-theme="light"] .site-nav{
+  background: rgba(247, 248, 250, 0.85);
+}
+
+[data-theme="light"] ::selection{
+  background: var(--cyan);
+  color: #ffffff;
+}
+
 html{ scroll-behavior: smooth; }
 
 @media (prefers-reduced-motion: reduce){
@@ -169,6 +200,29 @@ img{ max-width: 100%; display: block; }
   justify-content: center;
   cursor: pointer;
 }
+
+.theme-toggle{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-panel);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.theme-toggle:hover{ border-color: var(--cyan); color: var(--cyan); }
+
+.theme-toggle svg{ width: 18px; height: 18px; }
+
+.theme-toggle .icon-moon{ display: none; }
+
+[data-theme="light"] .theme-toggle .icon-sun{ display: none; }
+[data-theme="light"] .theme-toggle .icon-moon{ display: block; }
 
 @media (max-width: 780px){
   .nav-toggle{ display: flex; }
@@ -587,35 +641,4 @@ footer a:hover{ color: var(--cyan); }
   padding: 32px;
   color: var(--text-secondary);
   font-size: 0.95rem;
-}
-
-
-.contact-card{
-  flex-direction: row;
-  align-items: center;
-  gap: 16px;
-}
-
-.contact-card .icon{
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--bg-panel-2);
-  border: 1px solid var(--border);
-  color: var(--cyan);
-}
-
-.contact-card .icon svg{
-  width: 20px;
-  height: 20px;
-}
-
-.contact-card .text{
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
