@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
 </head>
 <body>
 
@@ -21,9 +22,9 @@
       <li><a href="index.html" data-page="index.html">Home</a></li>
       <li><a href="about.html" data-page="about.html">About Me</a></li>
       <li><a href="cv.html" data-page="cv.html">CV</a></li>
-      <!-- <li><a href="https://github.com/Sanskar-hep" target="_blank" rel="noopener" class="external-link">GitHub ↗</a></li> -->
+      <!--<li><a href="https://github.com/Sanskar-hep" target="_blank" rel="noopener" class="external-link">GitHub ↗</a></li>-->
       <li><a href="projects.html" data-page="projects.html">Projects</a></li>
-      <!-- <li><a href="blogs.html" data-page="blogs.html">Blogs</a></li> -->
+      <!--<li><a href="blogs.html" data-page="blogs.html">Blogs</a></li>-->
       <li><a href="contact.html" data-page="contact.html">Contact me</a></li>
       <li><button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark mode"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg></button></li>
     </ul>
@@ -34,15 +35,41 @@
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Projects</p>
-      <h2>Pulled straight from GitHub</h2>
-      <p>This list loads live from my GitHub account, so it's always current — nothing here is
-        hand-typed. Forks are hidden; sorted by most recently updated.</p>
+      <h2>My Projects</h2>
+      <p style="color:var(--text-secondary); margin:0;">A collection of my public repositories on GitHub. Click "Description" to read the README, or "Go to project" to visit the repository.</p>
     </div>
 
     <div id="projects-status" class="empty-note">Loading repositories…</div>
     <div class="card-grid" id="projects-grid"></div>
   </div>
 </section>
+
+<!-- README / description modal -->
+<div id="readme-modal-backdrop" class="cv-gate-backdrop" hidden>
+  <div class="cv-gate readme-modal">
+    <button type="button" id="readme-modal-close" class="cv-gate-close" aria-label="Close">✕</button>
+    <h3 id="readme-modal-title"></h3>
+    <div id="readme-modal-body" class="readme-body">Loading…</div>
+  </div>
+</div>
+
+<!-- Connect gate, shown before the GitHub link opens -->
+<div id="connect-modal-backdrop" class="cv-gate-backdrop" hidden>
+  <div class="cv-gate">
+    <button type="button" id="connect-modal-close" class="cv-gate-close" aria-label="Close">✕</button>
+    <h3>Before you head to <span id="connect-modal-repo"></span></h3>
+    <p>Tell me a bit about yourself — helps me know who's interested and in what.</p>
+    <!-- Replace YOUR_FORM_ID with your real Formspree endpoint -->
+    <form id="connect-form" action="https://formspree.io/f/mbgrrgwr" method="POST">
+      <input type="hidden" name="project" id="connect-form-project" value="">
+      <input type="text" name="name" placeholder="Your name" required>
+      <input type="email" name="email" placeholder="Your email (optional)">
+      <input type="text" name="research_area" placeholder="Your area of research / field" required>
+      <button type="submit" class="btn btn-primary">Continue to GitHub</button>
+    </form>
+    <p id="connect-form-status" class="cv-gate-status"></p>
+  </div>
+</div>
 
 <footer>
   <div class="wrap">
@@ -60,6 +87,87 @@
     var grid = document.getElementById('projects-grid');
     var status = document.getElementById('projects-status');
 
+    /* ---------- README modal ---------- */
+    var readmeBackdrop = document.getElementById('readme-modal-backdrop');
+    var readmeClose = document.getElementById('readme-modal-close');
+    var readmeTitle = document.getElementById('readme-modal-title');
+    var readmeBody = document.getElementById('readme-modal-body');
+
+    function openReadme(repo) {
+      readmeTitle.textContent = repo.name;
+      readmeBody.textContent = 'Loading…';
+      readmeBackdrop.hidden = false;
+
+      fetch('https://api.github.com/repos/' + GITHUB_USERNAME + '/' + repo.name + '/readme', {
+        headers: { Accept: 'application/vnd.github.v3.raw' }
+      }).then(function (res) {
+        if (!res.ok) throw new Error('No README');
+        return res.text();
+      }).then(function (text) {
+        var truncated = text.length > 8000;
+        var body = truncated ? text.slice(0, 8000) : text;
+        readmeBody.innerHTML = marked.parse(body);
+        if (truncated) {
+          var note = document.createElement('p');
+          note.innerHTML = '<em>… truncated — view the full README on GitHub.</em>';
+          readmeBody.appendChild(note);
+        }
+      }).catch(function () {
+        readmeBody.textContent = 'No README available for this repository.';
+      });
+    }
+
+    readmeClose.addEventListener('click', function () { readmeBackdrop.hidden = true; });
+    readmeBackdrop.addEventListener('click', function (e) {
+      if (e.target === readmeBackdrop) readmeBackdrop.hidden = true;
+    });
+
+    /* ---------- Connect gate, then open GitHub ---------- */
+    var connectBackdrop = document.getElementById('connect-modal-backdrop');
+    var connectClose = document.getElementById('connect-modal-close');
+    var connectRepoLabel = document.getElementById('connect-modal-repo');
+    var connectForm = document.getElementById('connect-form');
+    var connectProjectField = document.getElementById('connect-form-project');
+    var connectStatus = document.getElementById('connect-form-status');
+    var pendingRepoUrl = null;
+
+    function openConnect(repo) {
+      connectRepoLabel.textContent = repo.name;
+      connectProjectField.value = repo.name;
+      pendingRepoUrl = repo.html_url;
+      connectStatus.textContent = '';
+      connectForm.reset();
+      connectProjectField.value = repo.name;
+      connectBackdrop.hidden = false;
+    }
+
+    connectClose.addEventListener('click', function () { connectBackdrop.hidden = true; });
+    connectBackdrop.addEventListener('click', function (e) {
+      if (e.target === connectBackdrop) connectBackdrop.hidden = true;
+    });
+
+    connectForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+      connectStatus.textContent = 'Sending…';
+      var data = new FormData(connectForm);
+      fetch(connectForm.action, {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' }
+      }).then(function (res) {
+        if (res.ok) {
+          connectStatus.textContent = 'Thanks — opening the repository.';
+          window.open(pendingRepoUrl, '_blank', 'noopener');
+          setTimeout(function () { connectBackdrop.hidden = true; }, 900);
+        } else {
+          connectStatus.textContent = 'Something went wrong — please try again.';
+        }
+      }).catch(function () {
+        connectStatus.textContent = 'Network error — please try again.';
+      });
+    });
+
+    /* ---------- Load repos and build cards ---------- */
     fetch('https://api.github.com/users/' + GITHUB_USERNAME + '/repos?sort=updated&per_page=100')
       .then(function (res) {
         if (!res.ok) throw new Error('GitHub API error: ' + res.status);
@@ -88,7 +196,13 @@
             '<h3>' + repo.name + '</h3>' +
             '<p>' + desc + '</p>' +
             '<div class="tag-row">' + tags + '</div>' +
-            '<a class="card-link" href="' + repo.html_url + '" target="_blank" rel="noopener">View repository ↗</a>';
+            '<div class="project-actions">' +
+            '<button type="button" class="btn btn-ghost btn-readme">Description</button>' +
+            '<button type="button" class="btn btn-primary btn-goto">Go to project →</button>' +
+            '</div>';
+
+          card.querySelector('.btn-readme').addEventListener('click', function () { openReadme(repo); });
+          card.querySelector('.btn-goto').addEventListener('click', function () { openConnect(repo); });
 
           grid.appendChild(card);
         });
