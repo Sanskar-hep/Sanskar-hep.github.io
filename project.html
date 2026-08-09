@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>(function(){var t=localStorage.getItem("theme");if(t==="light")document.documentElement.setAttribute("data-theme","light");})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project — Sanskar</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="wrap">
+    <a href="index.html" class="logo"><span class="mark">SANSKAR NANDA</span></a>
+    <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About Me</a></li>
+      <li><a href="cv.html">CV</a></li>
+      <li><a href="projects.html" class="active">Projects</a></li>
+      <li><a href="contact.html">Contact me</a></li>
+      <li><button id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark mode"><svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg><svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg></button></li>
+    </ul>
+  </div>
+</nav>
+
+<section style="padding-top:64px;">
+  <div class="wrap" style="max-width:760px;">
+
+    <a href="projects.html" class="card-link" style="margin-bottom:28px; display:inline-block;">← Back to Projects</a>
+
+    <div id="project-loading" class="empty-note">Loading…</div>
+
+    <div id="project-content" hidden>
+      <p class="eyebrow">Project</p>
+      <h2 id="project-title" style="font-family:var(--font-display); font-size:clamp(1.8rem,4vw,2.4rem); margin:0 0 16px;"></h2>
+      <div class="tag-row" id="project-tags" style="margin-bottom:28px;"></div>
+      <div id="project-description" class="readme-body" style="max-height:none;"></div>
+      <a id="project-goto" class="btn btn-primary" target="_blank" rel="noopener" style="margin-top:32px;">Go to project →</a>
+    </div>
+
+    <div id="project-notfound" class="empty-note" hidden>
+      Couldn't find that project. <a href="projects.html">Back to Projects</a>.
+    </div>
+
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <span>© <span id="year"></span> Sanskar. Built and hosted on GitHub Pages.</span>
+    <span><a href="contact.html">Get in touch →</a></span>
+  </div>
+</footer>
+
+<script src="js/projects-data.js"></script>
+<script src="js/main.js"></script>
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  (function () {
+    function slugify(str) {
+      return str.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    var loading = document.getElementById('project-loading');
+    var content = document.getElementById('project-content');
+    var notfound = document.getElementById('project-notfound');
+
+    var slug = new URLSearchParams(window.location.search).get('slug');
+    var list = (typeof CUSTOM_PROJECTS !== 'undefined') ? CUSTOM_PROJECTS : [];
+    var project = list.find(function (p) { return (p.slug || slugify(p.name)) === slug; });
+
+    if (!project) {
+      loading.hidden = true;
+      notfound.hidden = false;
+    } else {
+      document.title = project.name + ' — Sanskar';
+      document.getElementById('project-title').textContent = project.name;
+
+      var tagsHtml = (project.tags || []).map(function (t) {
+        return '<span class="tag">' + t + '</span>';
+      }).join('');
+      document.getElementById('project-tags').innerHTML = tagsHtml;
+      document.getElementById('project-goto').href = project.url;
+
+      function renderDescription(text) {
+        loading.hidden = true;
+        content.hidden = false;
+        document.getElementById('project-description').innerHTML = marked.parse(text || 'No description provided.');
+      }
+
+      if (project.readmeRepo) {
+        fetch('https://api.github.com/repos/' + project.readmeRepo + '/readme', {
+          headers: { Accept: 'application/vnd.github.v3.raw' }
+        }).then(function (res) {
+          if (!res.ok) throw new Error('No README');
+          return res.text();
+        }).then(renderDescription).catch(function () {
+          renderDescription('Could not load the README for this repository.');
+        });
+      } else {
+        renderDescription(project.description);
+      }
+    }
+  })();
+</script>
+</body>
+</html>

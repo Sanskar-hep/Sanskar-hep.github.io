@@ -459,6 +459,8 @@ section{ padding: 84px 0; }
   flex-direction: column;
   gap: 14px;
   transition: border-color 0.15s ease, transform 0.15s ease;
+  text-decoration: none;
+  color: inherit;
 }
 
 .card:hover{ border-color: var(--cyan-dim); transform: translateY(-2px); }
@@ -743,15 +745,76 @@ footer a:hover{ color: var(--cyan); }
 }
 
 .readme-body{
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  line-height: 1.6;
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  line-height: 1.65;
   color: var(--text-secondary);
-  white-space: pre-wrap;
   max-height: 55vh;
   overflow-y: auto;
   background: var(--bg-panel-2);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 16px;
+  padding: 20px;
+}
+
+.readme-body h1, .readme-body h2, .readme-body h3{
+  font-family: var(--font-display);
+  color: var(--text-primary);
+  margin: 20px 0 10px;
+  line-height: 1.3;
+}
+
+.readme-body h1{ font-size: 1.3rem; }
+.readme-body h2{ font-size: 1.12rem; }
+.readme-body h3{ font-size: 1rem; }
+
+.readme-body p, .readme-body ul, .readme-body ol{ margin: 0 0 14px; }
+
+.readme-body ul, .readme-body ol{ padding-left: 22px; }
+
+.readme-body li{ margin-bottom: 6px; }
+
+.readme-body a{ color: var(--cyan); text-decoration: underline; text-underline-offset: 2px; }
+
+.readme-body code{
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 2px 5px;
+}
+
+.readme-body pre{
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  overflow-x: auto;
+  margin: 0 0 14px;
+}
+
+.readme-body pre code{
+  border: none;
+  padding: 0;
+  background: none;
+}
+
+.readme-body blockquote{
+  border-left: 3px solid var(--cyan-dim);
+  margin: 0 0 14px;
+  padding: 2px 0 2px 14px;
+  color: var(--text-tertiary);
+}
+
+.readme-body img{ max-width: 100%; border-radius: var(--radius-sm); margin: 8px 0; }
+
+.readme-body hr{ border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+
+.readme-body table{ border-collapse: collapse; width: 100%; margin: 0 0 14px; font-size: 0.85rem; }
+
+.readme-body th, .readme-body td{
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  text-align: left;
 }
